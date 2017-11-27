@@ -22,7 +22,7 @@ namespace Tetris_Like
             //generate the piece
 
             grille.CurrentPiece = randomPiece();
-            grille.DescentePiece();
+            grille.Des
             grille.AjoutPiece(p);
             grille.AffichageGrille();
             Thread.Sleep(1000);

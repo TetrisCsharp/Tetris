@@ -10,37 +10,21 @@ namespace Tetris_Like
     {
         private char[,] array; // remplissage de la grille
         private int id;
-        private int[,] arrayPosition; //position de la piece par rapport la grille (index de la price dans la grille)
+        private int[,] [] arrayPosition; //position de la piece par rapport la grille (index de la piece dans la grille)
 
-        public Piece(int id, int x, int y)
+        public Piece(int id)
         {
-            this.array = new char[x, y];
+            this.array = new char[id, id];
+            this.remplirArrayPosition();
             this.id = id;
-            this.arrayPosition = null;
-        }
+            this.arrayPosition = new int[id,id] [];
 
-        public void Update(bool rl) // update arrayPostion
-        {
-            if (rl)// left
+            for(int i = 0; i < id + 1; i++)
             {
-                for (int x = 0; x < this.arrayPosition.GetLength(0); x++)
+                for(int j = 0; j < id + 1; j++)
                 {
-                    for (int y = 0; y < this.arrayPosition.GetLength(1); y++)
-                    {
-                        if (id == 0)//Piece 1
-                        {
-
-                        }
-                        else //Piece 2 id == 1
-                        {
-                            this.arrayPosition] += 1
-                        }
-                    }
+                    this.arrayPosition[i, j] = new int[2];
                 }
-            }
-            else // right
-            {
-
             }
         }
 
@@ -56,7 +40,7 @@ namespace Tetris_Like
         }
         public char[,] Array { get; set; }
         public int Id { get; }
-        public int[] ArrayPosition { get; set; }
+        public int[,] [] ArrayPosition { get; set; }
     }
 
 }
