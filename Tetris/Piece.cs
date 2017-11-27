@@ -10,18 +10,19 @@ namespace Tetris_Like
     {
         private char[,] array; // remplissage de la grille
         private int id;
-        private int[,] [] arrayPosition; //position de la piece par rapport la grille (index de la piece dans la grille)
+        private int[,][] arrayPosition; //position de la piece par rapport la grille (index de la piece dans la grille)
 
         public Piece(int id)
         {
             this.array = new char[id, id];
-            this.remplirArrayPosition();
             this.id = id;
-            this.arrayPosition = new int[id,id] [];
+            this.remplirArrayPosition();
 
-            for(int i = 0; i < id + 1; i++)
+            this.arrayPosition = new int[id, id][];
+
+            for (int i = 0; i < id; i++)
             {
-                for(int j = 0; j < id + 1; j++)
+                for (int j = 0; j < id; j++)
                 {
                     this.arrayPosition[i, j] = new int[2];
                 }
@@ -30,17 +31,36 @@ namespace Tetris_Like
 
         public void remplirArrayPosition() // remplis la grille au tout début (donc 1 seule fois)
         {
-            for (int x = 0; x < this.id + 1; x++)
+            if (this.id == 1) this.array[0, 0] = 'x';
+            else
             {
-                for (int y = 0; y < this.id + 1; y++)
+                for (int x = 0; x < this.id; x++)
                 {
-                    this.array[x, y] = '#';
+                    for (int y = 0; y < this.id; y++)
+                    {
+                        this.array[x, y] = 'x';
+                    }
                 }
             }
         }
-        public char[,] Array { get; set; }
-        public int Id { get; }
-        public int[,] [] ArrayPosition { get; set; }
-    }
+        public char[,] Array
+        {
+            get
+            {
+                return this.array;
+            }
+            set
+            {
+                this.array = value;
+            }
+        }
 
+        public int Id { get; }
+        public int[,][] ArrayPosition
+        {
+            get { return this.arrayPosition; }
+            set { this.arrayPosition = value; }
+        }
+
+    }
 }

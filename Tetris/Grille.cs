@@ -15,11 +15,11 @@ namespace Tetris_Like
 
         public Grille() {
             this.tab = new char[dim_x, dim_y];
-            for(int x = 0; x < dim_x + 1; x++)
+            for(int x = 0; x < dim_x; x++)
             {
-                for(int y = 0; y < dim_y + 1; y++)
+                for(int y = 0; y < dim_y; y++)
                 {
-                    this.tab[x, y] = ' ';
+                   this.tab[x, y] = ' ';
                 }
             }
         }
@@ -34,13 +34,13 @@ namespace Tetris_Like
             {
                 for (int j = 0; j < tab.GetLength(1); j++)
                 {
-                    if(j == 0 ) Console.Write(" | ");
+                    if(j == 0 ) Console.Write(" |");
                     Console.Write(" ");
                     Console.Write(tab[i, j]);
 
                     if (j == dim_y - 1)
                     {
-                        Console.Write(" | ");
+                        Console.Write("| ");
                         Console.Write("\n");
                     }
                 }
@@ -58,8 +58,12 @@ namespace Tetris_Like
                 for (int j = 0; j < this.currentPiece.Array.GetLength(1); j++)
                 {
                     this.tab[i, j] = this.currentPiece.Array[i, j];
+                    this.currentPiece.ArrayPosition[i, j][0] = i;
+                    this.currentPiece.ArrayPosition[i, j][1] = j;
                 }
             }
+            //UPDATE Array position
+
         }
 
         public void suppressionPiece() // (de la grille)

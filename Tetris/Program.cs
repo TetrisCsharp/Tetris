@@ -23,7 +23,10 @@ namespace Tetris_Like
 
             grille.AjoutPiece(randomPiece());
             grille.AffichageGrille();
-            Thread.Sleep(1000);
+            Thread.Sleep(2000);
+            Console.Clear();
+            grille.suppressionPiece();
+            grille.AffichageGrille();
 
             /*
             grille.DescentePiece()
@@ -56,7 +59,7 @@ namespace Tetris_Like
         public static Piece randomPiece()
         {
             Random random = new Random();
-            int rand = random.Next(1,3); // 1 ou 2
+            int rand = 2; // 1 ou 2
             return new Piece(rand);
 
         }
