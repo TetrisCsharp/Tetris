@@ -92,7 +92,11 @@ namespace Tetris_Like
 
         public bool grilleFull()
         {
-            return;
+            int i = 0;
+            for(int j = 0; j < this.tab.GetLength(1); j++)
+            {
+                if (this.tab[i, j] == '#') return true;
+            } return false;
         }
 
     }

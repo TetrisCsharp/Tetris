@@ -21,11 +21,11 @@ namespace Tetris_Like
 
             //generate the piece
 
-            grille.CurrentPiece = randomPiece();
-            grille.Des
-            grille.AjoutPiece(p);
+            grille.AjoutPiece(randomPiece());
             grille.AffichageGrille();
             Thread.Sleep(1000);
+
+            /*
             grille.DescentePiece()
 
             Console.Clear();
@@ -39,6 +39,7 @@ namespace Tetris_Like
             {
                 Console.WriteLine("up !!!");
             }
+            */
 
             Console.ReadKey();
         }
@@ -55,9 +56,8 @@ namespace Tetris_Like
         public static Piece randomPiece()
         {
             Random random = new Random();
-            int rand = random.Next(2);
-            if (rand == 1) return new Piece(rand, 0, 0);
-            else return new Piece(rand, 1, 1);
+            int rand = random.Next(1,3); // 1 ou 2
+            return new Piece(rand);
 
         }
     }
