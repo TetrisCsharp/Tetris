@@ -8,109 +8,119 @@ namespace Tetris_Like
 {
     class Program
     {
-        private Grille grille;
-
         static void Main(string[] args)
         {
-
+            bool ok = true;
             //init grille
             Grille grille = new Grille();
             grille.AffichageGrille();
 
-            //Déclaration des threads
-            Thread keyThread = new Thread(keyPressed(grille));
+            //threads declarations
+            Thread threadKey = new Thread(()=>KeyPressed(grille));
+            threadKey.Start();
 
             //waiting a key to begin
             Console.WriteLine("Appuyez pour jouer");
             Console.Read();
-           
+            grille.Tab[4, 1] = 'x';
+        
+            addPiece(grille);
+            Console.Write(grille.verifUnderPiece());
+            deletePiece(grille);
+            goRight(grille);
 
+            Console.WriteLine(grille.verifUnderPiece());
+            Thread.Sleep(500);
+
+            deletePiece(grille);
+            goDown(grille);
+            Console.WriteLine(grille.verifUnderPiece());
+            Thread.Sleep(500);
+
+            deletePiece(grille);
+            goDown(grille);
+            Console.WriteLine(grille.verifUnderPiece());
+            Thread.Sleep(500);
+
+            deletePiece(grille);
+            goDown(grille);
+            Console.WriteLine(grille.verifUnderPiece());
+            Thread.Sleep(500);
+            deletePiece(grille);
+
+            goRight(grille);
+            Console.WriteLine(grille.verifUnderPiece());
+            Thread.Sleep(500);
+            deletePiece(grille);
+
+            goDown(grille);
+            Console.WriteLine(grille.verifUnderPiece()|| grille.verifLeftPiece());
+            Thread.Sleep(500);
+            deletePiece(grille);
+
+            Console.ReadKey();
+        }
+
+        public static bool KeyPressed(Grille grille)
+        {
+            while (true)
+            {
+                ConsoleKeyInfo cki;
+                cki = Console.ReadKey();
+                Console.WriteLine(cki.Key);
+                if (cki.Key == ConsoleKey.LeftArrow) return false;
+                else return true;
+            }
+        }
+
+
+
+        public static void addPiece(Grille grille)
+        {
             //Ajout Piece
-            grille.AjoutPiece(randomPiece());
+            grille.AjoutPiece(new Piece());
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
-            
 
+
+
+        }
+
+        public static void deletePiece(Grille grille)
+        {
             //Supprimer Piece
             grille.suppressionPiece();
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
-            
+        }
 
+        public static void goRight(Grille grille)
+        {
             // Aller à droite            
             grille.deplacementPiece(true);
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
-                
-            // Re - suppression
-            grille.suppressionPiece();
+        }
+
+        public static void goLeft(Grille grille)
+        {
+            // Aller à droite            
+            grille.deplacementPiece(false);
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
+        }
 
-
+        public static void goDown(Grille grille)
+        {
             //Descendre Pièce
             grille.descendrePiece();
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
-
-            grille.suppressionPiece();
-            Console.Clear();
-            grille.AffichageGrille();
-            Thread.Sleep(500);
-
-            
-            // Aller encore à droite
-            grille.deplacementPiece(true);
-            Console.Clear();
-            grille.AffichageGrille();
-            Thread.Sleep(500);
-
-
-
-
-            //go o the left
-
-            /*
-            grille.DescentePiece()
-
-            Console.Clear();
-            grille.AjoutPiece2();
-            grille.AffichageGrille();
-            Console.WriteLine("press up");
-            Thread.Sleep(1000);
-            ConsoleKeyInfo a = Console.ReadKey();
-            Thread.Sleep(2000);
-            if (a.Key == ConsoleKey.UpArrow)
-            {
-                Console.WriteLine("up !!!");
-            }
-            */
-
-            Console.ReadKey();
-        }
-
-        public bool keyPressed(Grille grille)
-        {
-            ConsoleKeyInfo cki;
-            cki = Console.ReadKey();
-
-            if (cki.Key == ConsoleKey.LeftArrow) return false;
-            else return true;
-        }
-
-
-
-        public static Piece randomPiece()
-        {
-            Random random = new Random();
-            int rand = random.Next(1,3); // 1 ou 2
-            return new Piece(rand);
-
         }
     }
 }
