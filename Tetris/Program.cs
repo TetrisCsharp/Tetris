@@ -8,11 +8,17 @@ namespace Tetris_Like
 {
     class Program
     {
+        private Grille grille;
+
         static void Main(string[] args)
         {
+
             //init grille
             Grille grille = new Grille();
             grille.AffichageGrille();
+
+            //Déclaration des threads
+            Thread keyThread = new Thread(keyPressed(grille));
 
             //waiting a key to begin
             Console.WriteLine("Appuyez pour jouer");
@@ -26,28 +32,40 @@ namespace Tetris_Like
             Thread.Sleep(500);
             
 
-            //delete piece
+            //Supprimer Piece
             grille.suppressionPiece();
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
             
 
-            // go on the right
-
-            
-            grille.descentePiece("right");
+            // Aller à droite            
+            grille.deplacementPiece(true);
             Console.Clear();
-                grille.AffichageGrille();
-                Thread.Sleep(500);
+            grille.AffichageGrille();
+            Thread.Sleep(500);
                 
-            //problème
+            // Re - suppression
             grille.suppressionPiece();
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
+
+
+            //Descendre Pièce
+            grille.descendrePiece();
+            Console.Clear();
+            grille.AffichageGrille();
+            Thread.Sleep(500);
+
+            grille.suppressionPiece();
+            Console.Clear();
+            grille.AffichageGrille();
+            Thread.Sleep(500);
+
             
-            grille.descentePiece("right");
+            // Aller encore à droite
+            grille.deplacementPiece(true);
             Console.Clear();
             grille.AffichageGrille();
             Thread.Sleep(500);
@@ -76,13 +94,15 @@ namespace Tetris_Like
             Console.ReadKey();
         }
 
-        public void keyPressed(ConsoleKeyInfo cki)
+        public bool keyPressed(Grille grille)
         {
-            if (cki.Key == ConsoleKey.UpArrow) { }
-            if (cki.Key == ConsoleKey.DownArrow) { }
-            if (cki.Key == ConsoleKey.LeftArrow) { }
-            if (cki.Key == ConsoleKey.RightArrow) { }
+            ConsoleKeyInfo cki;
+            cki = Console.ReadKey();
+
+            if (cki.Key == ConsoleKey.LeftArrow) return false;
+            else return true;
         }
+
 
 
         public static Piece randomPiece()

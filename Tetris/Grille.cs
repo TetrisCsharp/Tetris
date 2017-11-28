@@ -62,8 +62,6 @@ namespace Tetris_Like
                     this.currentPiece.ArrayPosition[i, j][1] = j;
                 }
             }
-            //UPDATE Array position
-
         }
 
         public void suppressionPiece() // //cacher la piece
@@ -81,10 +79,13 @@ namespace Tetris_Like
         }
 
         // gère uniquement la descente de la pièce (c'est à dire la suppression de la piece entre les indices de la matrice de position (piece.arrayPosition)
-        public void descentePiece(string str)
+        public void deplacementPiece(bool str)
         {
+            //true => right
+            //false => left
+
             int b = 0;
-            if (str == "right") b = 1; // right
+            if (str == true) b = 1; // right
             else b = -1; // left
 
             for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
@@ -102,7 +103,32 @@ namespace Tetris_Like
             }
         }
 
-        public bool grilleFull()
+        public void descendrePiece()
+        {
+            for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
+            {
+                for (int j = 0; j < this.currentPiece.ArrayPosition.GetLength(1); j++)
+                {
+                    //nouvelle coordonnées
+
+                    int n1 = this.currentPiece.ArrayPosition[i, j][0] + 1;//x
+                    int n2 = this.currentPiece.ArrayPosition[i, j][1];//y
+
+                    this.currentPiece.ArrayPosition[i, j][0] += 1;
+                    this.tab[n1, n2] = 'x';
+                }
+            }
+        }
+
+        public bool fondBoard()// Todo
+        {
+            //checker si la piece est arrivé au bout
+            //si c'est le cas on arrete la descente
+
+            return true;
+        }
+
+        public bool grilleFull() // fin de partie
         {
             int i = 0;
             for(int j = 0; j < this.tab.GetLength(1); j++)
@@ -110,6 +136,9 @@ namespace Tetris_Like
                 if (this.tab[i, j] == '#') return true;
             } return false;
         }
-
+        public void limit()
+        {
+            
+        }
     }
 }
