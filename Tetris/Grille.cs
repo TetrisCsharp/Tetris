@@ -12,6 +12,7 @@ namespace Tetris_Like
         private const int dim_y = 8; // largeur de la grille
         private char[,] tab; // la grille en elle meme
         private Piece currentPiece; // la piece que l'on est en train de bouger sur la grille
+        private ConsoleKey ck;
 
         public Grille() {
             this.tab = new char[dim_x, dim_y];
@@ -24,6 +25,11 @@ namespace Tetris_Like
             }
         }
 
+        public ConsoleKey Keyboard
+        {
+            get { return this.ck; }
+            set { this.ck = value; }
+        }
         public char[,] Tab
         {
             get { return this.tab; }
