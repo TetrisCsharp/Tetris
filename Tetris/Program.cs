@@ -17,16 +17,45 @@ namespace Tetris_Like
             //waiting a key to begin
             Console.WriteLine("Appuyez pour jouer");
             Console.Read();
-            Console.Clear();
+           
 
-            //generate the piece
-
+            //Ajout Piece
             grille.AjoutPiece(randomPiece());
-            grille.AffichageGrille();
-            Thread.Sleep(2000);
             Console.Clear();
-            grille.suppressionPiece();
             grille.AffichageGrille();
+            Thread.Sleep(500);
+            
+
+            //delete piece
+            grille.suppressionPiece();
+            Console.Clear();
+            grille.AffichageGrille();
+            Thread.Sleep(500);
+            
+
+            // go on the right
+
+            
+            grille.descentePiece("right");
+            Console.Clear();
+                grille.AffichageGrille();
+                Thread.Sleep(500);
+                
+            //problème
+            grille.suppressionPiece();
+            Console.Clear();
+            grille.AffichageGrille();
+            Thread.Sleep(500);
+            
+            grille.descentePiece("right");
+            Console.Clear();
+            grille.AffichageGrille();
+            Thread.Sleep(500);
+
+
+
+
+            //go o the left
 
             /*
             grille.DescentePiece()
@@ -59,7 +88,7 @@ namespace Tetris_Like
         public static Piece randomPiece()
         {
             Random random = new Random();
-            int rand = 2; // 1 ou 2
+            int rand = random.Next(1,3); // 1 ou 2
             return new Piece(rand);
 
         }

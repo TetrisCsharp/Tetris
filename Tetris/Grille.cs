@@ -52,12 +52,12 @@ namespace Tetris_Like
             //add the piece to the grille
             this.currentPiece = piece;
 
-            //
+            //add piece.array to (0,0) of the grille
             for (int i = 0; i < this.currentPiece.Array.GetLength(0); i++)
             {
                 for (int j = 0; j < this.currentPiece.Array.GetLength(1); j++)
                 {
-                    this.tab[i, j] = this.currentPiece.Array[i, j];
+                    this.tab[i, j] = 'x';
                     this.currentPiece.ArrayPosition[i, j][0] = i;
                     this.currentPiece.ArrayPosition[i, j][1] = j;
                 }
@@ -66,12 +66,12 @@ namespace Tetris_Like
 
         }
 
-        public void suppressionPiece() // (de la grille)
+        public void suppressionPiece() // //cacher la piece
         {
             //par rapport à arrayPosition
-            for(int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
+            for(int i = 0; i < this.currentPiece.Array.GetLength(0); i++)
             {
-                for(int j = 0;  j <this.currentPiece.ArrayPosition.GetLength(1); j++)
+                for(int j = 0;  j <this.currentPiece.Array.GetLength(1); j++)
                 {
                     int n1 = this.currentPiece.ArrayPosition[i, j][0];//x
                     int n2 = this.currentPiece.ArrayPosition[i, j][1];//y
@@ -81,15 +81,23 @@ namespace Tetris_Like
         }
 
         // gère uniquement la descente de la pièce (c'est à dire la suppression de la piece entre les indices de la matrice de position (piece.arrayPosition)
-        public void updatePiece()
+        public void descentePiece(string str)
         {
-            for (int i = 0; i < this.CurrentPiece.ArrayPosition.GetLength(0); i++)
+            int b = 0;
+            if (str == "right") b = 1; // right
+            else b = -1; // left
+
+            for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
             {
                 for (int j = 0; j < this.currentPiece.ArrayPosition.GetLength(1); j++)
                 {
+                    //nouvelle coordonnées
+                    
                     int n1 = this.currentPiece.ArrayPosition[i, j][0];//x
-                    int n2 = this.currentPiece.ArrayPosition[i, j][1];//y
-                    this.Tab[i, j] = ' ';
+                    int n2 = this.currentPiece.ArrayPosition[i, j][1] + b;//y
+
+                    this.currentPiece.ArrayPosition[i, j][1] += b;
+                    this.tab[n1, n2] = 'x';
                 }
             }
         }
