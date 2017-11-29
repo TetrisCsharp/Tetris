@@ -8,7 +8,7 @@ namespace Tetris_Like
 {
     public class Grille
     {
-        private const int dim_x = 8; // hauteur de la grille
+        private const int dim_x = 12; // hauteur de la grille
         private const int dim_y = 8; // largeur de la grille
         private char[,] tab; // la grille en elle meme
         private Piece currentPiece; // la piece que l'on est en train de bouger sur la grille
@@ -16,11 +16,11 @@ namespace Tetris_Like
 
         public Grille() {
             this.tab = new char[dim_x, dim_y];
-            for(int x = 0; x < dim_x; x++)
+            for (int x = 0; x < dim_x; x++)
             {
-                for(int y = 0; y < dim_y; y++)
+                for (int y = 0; y < dim_y; y++)
                 {
-                   this.tab[x, y] = ' ';
+                    this.tab[x, y] = ' ';
                 }
             }
         }
@@ -47,8 +47,8 @@ namespace Tetris_Like
             {
                 for (int j = 0; j < tab.GetLength(1); j++)
                 {
-                    if(j == 0 ) Console.Write("|");
-                    
+                    if (j == 0) Console.Write("|");
+
                     Console.Write(tab[i, j]);
 
                     if (j == dim_y - 1)
@@ -81,9 +81,9 @@ namespace Tetris_Like
         public void suppressionPiece() // //cacher la piece
         {
             //par rapport à arrayPosition
-            for(int i = 0; i < this.currentPiece.Array.GetLength(0); i++)
+            for (int i = 0; i < this.currentPiece.Array.GetLength(0); i++)
             {
-                for(int j = 0;  j <this.currentPiece.Array.GetLength(1); j++)
+                for (int j = 0; j < this.currentPiece.Array.GetLength(1); j++)
                 {
                     int n1 = this.currentPiece.ArrayPosition[i, j][0];//x
                     int n2 = this.currentPiece.ArrayPosition[i, j][1];//y
@@ -107,7 +107,7 @@ namespace Tetris_Like
                 for (int j = 0; j < this.currentPiece.ArrayPosition.GetLength(1); j++)
                 {
                     //nouvelle coordonnées
-                    
+
                     int n1 = this.currentPiece.ArrayPosition[i, j][0];//x
                     int n2 = this.currentPiece.ArrayPosition[i, j][1] + b;//y
 
@@ -142,19 +142,20 @@ namespace Tetris_Like
 
         public bool verifUnderPiece() //retourne true s'il existe une piece en dessous, false sinon
         {
-                //index ligne fixé sur la dernière ligne
-                int indexLigne = this.currentPiece.ArrayPosition.GetLength(0) - 1;
-               
-                //colonnes
-                for(int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
-                {
-                    int indexX = this.currentPiece.ArrayPosition[indexLigne, i][0]; // index lde la ligne
-                    int indexY = this.currentPiece.ArrayPosition[indexLigne, i][1]; // index lde la colonne
-                                                                                
-                    //verification sur la ligne suivante
-                    if (this.tab[indexX + 1, indexY] == 'x') return true;
-                }
-                return false ;
+            //index ligne fixé sur la dernière ligne
+            int indexLigne = this.currentPiece.ArrayPosition.GetLength(0) - 1;
+
+            //colonnes
+            for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
+            {
+                int indexX = this.currentPiece.ArrayPosition[indexLigne, i][0]; // index lde la ligne
+                int indexY = this.currentPiece.ArrayPosition[indexLigne, i][1]; // index lde la colonne
+
+                //verification sur la ligne suivante (les conditions d'arrêts pour laisser la pièce à un endroit et pour passer à une nouvelle piece
+                if (indexX == this.tab.GetLength(0) - 1) return true;
+                if (this.tab[indexX + 1, indexY] == 'x') return true;
+            }
+            return false;
         }
 
         public bool verifLeftPiece() //retourne true s'il existe une piece en dessous, false sinon
@@ -169,15 +170,19 @@ namespace Tetris_Like
                 int indexY = this.currentPiece.ArrayPosition[i, indexColonne][1]; // index lde la colonne
 
                 //verification sur la colonne à gauche
-                if (this.tab[indexX, indexY - 1] == 'x') return true;
+                if (indexY != 0)
+                {
+                    if (this.tab[indexX, indexY - 1] == 'x') return true;
+                }
             }
             return false;
+
         }
 
         public bool verifRightPiece() //retourne true s'il existe une piece en dessous, false sinon
         {
             //index colonne fixé sur la dernière colonne
-            int indexColonne = this.currentPiece.ArrayPosition.GetLength(1)-1;
+            int indexColonne = this.currentPiece.ArrayPosition.GetLength(1) - 1;
 
             //colonnes
             for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(0); i++)
@@ -185,24 +190,100 @@ namespace Tetris_Like
                 int indexX = this.currentPiece.ArrayPosition[i, indexColonne][0]; // index lde la ligne
                 int indexY = this.currentPiece.ArrayPosition[i, indexColonne][1]; // index lde la colonne
 
-                //verification sur la colonne à gauche
-                if (this.tab[indexX, indexY + 1] == 'x') return true;
+                if (indexY != this.tab.GetLength(1) - 1)
+                {
+                    //verification sur la colonne à gauche
+                    if (this.tab[indexX, indexY + 1] == 'x') return true;
+                }
             }
             return false;
         }
 
-
-        public bool grilleFull() // fin de partie
+        public bool beforeTheEnd()
         {
+            for (int i = 0; i < this.currentPiece.ArrayPosition.GetLength(1); i++)
+            {
+                if (this.currentPiece.ArrayPosition[this.currentPiece.ArrayPosition.GetLength(0) - 1, i][0] < this.tab.GetLength(0) - 1)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+
+        public bool grilleFull() // fin de partie //todo
+        {//la grille est full si la partie basse de la position de la pièce est en conflit avec le tab de la grille aux memes position
             int i = 0;
-            for(int j = 0; j < this.tab.GetLength(1); j++)
+            for (int j = 0; j < this.tab.GetLength(1); j++)
             {
                 if (this.tab[0, j] == 'x') return true;
             } return false;
         }
-        public void limit()
+
+        public bool limits()
         {
-            
+            return this.OutOfLimitLeft() || this.OutOfLimitRight();
+        }
+        public bool OutOfLimitLeft()
+        {
+            int indexColonne = this.currentPiece.ArrayPosition[0, this.currentPiece.ArrayPosition.GetLength(1) - 1][1]; //colonne fixé
+            if (indexColonne == 0) return true;
+            return false;
+
+        }
+
+        public bool OutOfLimitRight()
+        {
+
+            int indexColonne = this.currentPiece.ArrayPosition[0, this.currentPiece.ArrayPosition.GetLength(1) - 1][1];
+            if (indexColonne == this.tab.GetLength(1) - 1) return true;
+            return false;
+        }
+
+        public bool verifDeleteLineOn(int x)//todo
+        {
+            int cpt = 0;
+
+            for (int y = 0; y < this.tab.GetLength(1); y++)
+            {
+                if (this.tab[x, y] == 'x') cpt++;
+                else break;
+            }
+            if (cpt == this.tab.GetLength(1) - 1) return true;
+            return false;
+
+        }
+
+        public void deleteLine()//to be tested
+        {
+            for (int x = 0; x < this.tab.GetLength(0); x++)
+            {
+                if (verifDeleteLineOn(x))
+                {
+                    for (int y = 0; y < this.tab.GetLength(1); y++)
+                    {
+                        moveElementAbove(x);
+                    }
+                }
+            }
+        }
+
+        public void moveElementAbove(int x) // to be tested
+        {
+            for (int i = x; i >= 0; i--)
+            {
+                for (int j = 0; j < this.tab.GetLength(1); j++)
+                {
+                    this.tab[i, j] = this.tab[i - 1, j];
+                }
+            }
+            //first line (new line)
+            for (int j = 0; j < this.tab.GetLength(1); j++)
+            {
+                this.tab[0, j] = ' ';
+            }
         }
     }
 }
+

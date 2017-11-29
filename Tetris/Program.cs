@@ -25,28 +25,36 @@ namespace Tetris_Like
 
             bool finishGame = false;
             bool finishWithPiece = false;
-
+            int refresh = 250;
             while (!finishGame)
             {
-                addPiece(grille);
-                deletePiece(grille);
-
+                addPiece(grille,refresh);
+                deletePiece(grille,refresh);
+                
                 while (!grille.verifUnderPiece()) {
-
-                    if (grille.Keyboard == ConsoleKey.LeftArrow)
+                    
+                    if (grille.Keyboard == ConsoleKey.LeftArrow && !grille.OutOfLimitLeft())
                     {
-                        goLeft(grille);
-                        deletePiece(grille);
+                        if (!grille.verifLeftPiece())
+                        {
+                            goLeft(grille, refresh);
+                            deletePiece(grille, refresh);
+                        }
                     }
-                    else if (grille.Keyboard == ConsoleKey.RightArrow)
+                    else if (grille.Keyboard == ConsoleKey.RightArrow && !grille.OutOfLimitRight())
                     {
-                        goRight(grille);
-                        deletePiece(grille);
+                        if (!grille.verifRightPiece())
+                        {
+                            goRight(grille, refresh);
+                            deletePiece(grille, refresh);
+                        }
                     }
-                    else { }
-                    goDown(grille);
-                    deletePiece(grille);
-                   }
+                    if (grille.beforeTheEnd()) break;
+                    goDown(grille,refresh);
+                    if(!grille.verifUnderPiece())  deletePiece(grille,refresh);
+                    grille.deleteLine();
+                    
+               }
                 }
 
 
@@ -84,7 +92,7 @@ namespace Tetris_Like
             {
                 while (true)
                 {
-                    ConsoleKeyInfo cki;
+                ConsoleKeyInfo cki;
                     cki = Console.ReadKey();
                     grille.Keyboard = cki.Key;
 
@@ -92,52 +100,52 @@ namespace Tetris_Like
             }
 
 
-            public static void addPiece(Grille grille)
+            public static void addPiece(Grille grille,int n)
             {
                 //Ajout Piece
                 grille.AjoutPiece(new Piece());
                 Console.Clear();
                 grille.AffichageGrille();
-                Thread.Sleep(500);
+                Thread.Sleep(n);
 
 
 
             }
 
-            public static void deletePiece(Grille grille)
+            public static void deletePiece(Grille grille,int n)
             {
                 //Supprimer Piece
                 grille.suppressionPiece();
                 Console.Clear();
                 grille.AffichageGrille();
-                Thread.Sleep(500);
+                Thread.Sleep(n);
             }
 
-            public static void goRight(Grille grille)
+            public static void goRight(Grille grille,int n)
             {
                 // Aller à droite            
                 grille.deplacementPiece(true);
                 Console.Clear();
                 grille.AffichageGrille();
-                Thread.Sleep(500);
+                Thread.Sleep(n);
             }
 
-            public static void goLeft(Grille grille)
+            public static void goLeft(Grille grille,int n)
             {
                 // Aller à droite            
                 grille.deplacementPiece(false);
                 Console.Clear();
                 grille.AffichageGrille();
-                Thread.Sleep(500);
+                Thread.Sleep(n);
             }
 
-            public static void goDown(Grille grille)
+            public static void goDown(Grille grille,int n)
             {
                 //Descendre Pièce
                 grille.descendrePiece();
                 Console.Clear();
                 grille.AffichageGrille();
-                Thread.Sleep(500);
+                Thread.Sleep(n);
             }
         }
     } 
