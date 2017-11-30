@@ -14,18 +14,29 @@ namespace Tetris_Like
         private int speed; // pour le reste
         private bool finishGame;
         private bool finishWithPiece;
+        private Thread threadKey;
+        private Thread threadDisplay;
+        private Thread threadDelete;
+        private Thread threadClientServer;
 
-        public GameManager(Grille grille, int refresh, int speed)
+        public GameManager(int refresh, int speed)
         {
-            this.grille = grille;
+            this.grille = new Grille();
             this.refresh = refresh;
             this.speed = speed;
             this.finishGame = false;
             this.finishWithPiece = false;
+            this.threadDisplay = new Thread(() => display(this));
+            this.threadDelete = new Thread(() => deleteLine());
+            this.threadKey = new Thread(() => KeyPressed(grille));
+          
         }
-
         public void startGame()
         {
+
+            threadKey.Start();
+            threadDisplay.Start();
+
             while (!grille.grilleFull())
             {
                 addPiece(grille);
@@ -36,10 +47,19 @@ namespace Tetris_Like
                     goDown(grille);
                     if (!grille.verifBelowPiece()) grille.suppressionPiece();
                     grille.deleteLine();
-                    //Console.WriteLine(grille.grilleFull());
                 }
             }
+            Console.Clear();
+            Console.WriteLine("GAME OVER !!!");
 
+        }
+
+        public void deleteLine()
+        {
+            while (true)
+            {
+                grille.deleteLine();
+            }
         }
 
         public bool KeyPressed(Grille grille)

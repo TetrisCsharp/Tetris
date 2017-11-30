@@ -32,14 +32,14 @@ namespace Tetris_Like
 
         public void remplirArrayPosition() // remplis la grille au tout début (donc 1 seule fois)
         {
-            if (this.id == 1) this.array[0, 0] = 'x';
+            if (this.id == 1) this.array[0, 0] = '#';
             else
             {
                 for (int x = 0; x < this.id; x++)
                 {
                     for (int y = 0; y < this.id; y++)
                     {
-                        this.array[x, y] = 'x';
+                        this.array[x, y] = '#';
                     }
                 }
             }

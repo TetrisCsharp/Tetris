@@ -10,30 +10,27 @@ namespace Tetris_Like
     {
 
         static void Main(string[] args)
-        {   //variables
+        {
+            //Connecion();
+
+            //variables
             int refresh = 50;
-            int speed = 250;
-            Grille grille = new Grille();
-            GameManager gameManager = new GameManager(grille, refresh,speed);
+            int speed = 300;
 
+            GameManager gameManager = new GameManager(refresh, speed);
 
-            //Threads declarations
-            Thread threadKey = new Thread(() => gameManager.KeyPressed(grille));
-            Thread threadDipslay = new Thread(() => gameManager.display(gameManager));
-            Thread threadCommuncation = new Thread(() => gameManager.CommunicationWithServer());
-            
-            //Waiting a key to begin
             Console.WriteLine("Appuyez pour jouer");
             Console.ReadKey();
             Console.Clear();
 
-            threadKey.Start();
-            threadDipslay.Start();
-            threadCommuncation.Start();
-
             gameManager.startGame();
 
         }
+
+        public static void Connecion(){
+            Client client = new Client();
+            client.StartClient();
+    }
 
     }
 }

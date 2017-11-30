@@ -14,6 +14,7 @@ namespace Tetris_Like
         private Piece currentPiece; // la piece que l'on est en train de bouger sur la grille
         private ConsoleKey ck;
 
+
         public Grille() {
 
             this.tab = new char[dim_x, dim_y];
@@ -63,7 +64,7 @@ namespace Tetris_Like
                     }
                 }
             }
-            Console.WriteLine("----------------");
+            Console.WriteLine("----------");
 
         }
 
@@ -78,7 +79,7 @@ namespace Tetris_Like
             {
                 for (int j = 0; j < this.currentPiece.Array.GetLength(1); j++)
                 {
-                    this.tab[i, j] = 'x';
+                    this.tab[i, j] = '#';
                     this.currentPiece.ArrayPosition[i, j][0] = i;
                     this.currentPiece.ArrayPosition[i, j][1] = j;
                 }
@@ -121,7 +122,7 @@ namespace Tetris_Like
                     int n2 = this.currentPiece.ArrayPosition[i, j][1] + b;//y
 
                     this.currentPiece.ArrayPosition[i, j][1] += b;
-                  this.tab[n1, n2] = 'x';
+                  this.tab[n1, n2] = '#';
                 }
             }
         }
@@ -139,11 +140,10 @@ namespace Tetris_Like
                     int n2 = this.currentPiece.ArrayPosition[i, j][1];//y
 
                     this.currentPiece.ArrayPosition[i, j][0] += 1;
-                    this.tab[n1, n2] = 'x';
+                    this.tab[n1, n2] = '#';
                 }
             }
         }
-
         // OK
         public bool verifBelowPiece() //retourne true s'il existe une piece en dessous, false sinon
         {
@@ -158,7 +158,7 @@ namespace Tetris_Like
 
                 //verification sur la ligne suivante (les conditions d'arrêts pour laisser la pièce à un endroit et pour passer à une nouvelle piece
                 if (indexX == this.tab.GetLength(0) - 1) return true;
-                if (this.tab[indexX + 1, indexY] == 'x') return true;
+                if (this.tab[indexX + 1, indexY] == '#') return true;
             }
             return false;
         }
@@ -177,7 +177,7 @@ namespace Tetris_Like
                 //verification sur la colonne à gauche
                 if (indexY > 0)
                 {
-                    if (this.tab[indexX, indexY - 1] == 'x') return true;
+                    if (this.tab[indexX, indexY - 1] == '#') return true;
                 }
             }
             return false;
@@ -198,7 +198,7 @@ namespace Tetris_Like
                 if (indexY != this.tab.GetLength(1) - 1)
                 {
                     //verification sur la colonne à gauche
-                    if (this.tab[indexX, indexY + 1] == 'x') return true;
+                    if (this.tab[indexX, indexY + 1] == '#') return true;
                 }
             }
             return false;
@@ -222,7 +222,7 @@ namespace Tetris_Like
             int i = 0;
             for (int j = 0; j < this.tab.GetLength(1); j++)
             {
-                if (this.tab[0, j] == 'x') return true;
+                if (this.tab[0, j] == '#') return true;
             } return false;
         }
 
@@ -252,10 +252,10 @@ namespace Tetris_Like
 
             for (int y = 0; y < this.tab.GetLength(1); y++)
             {
-                if (this.tab[x, y] == 'x') cpt++;
+                if (this.tab[x, y] == '#') cpt++;
                 else break;
             }
-            if (cpt == this.tab.GetLength(1) - 1) return true;
+            if (cpt == this.tab.GetLength(1)) return true;
             return false;
 
         }
@@ -264,7 +264,7 @@ namespace Tetris_Like
         {
             for (int x = 0; x < this.tab.GetLength(0); x++)
             {
-                if (verifDeleteLineOn(x))
+                if (verifDeleteLineOn(x)==true)
                 {
                     moveElementAbove(x);
                 }
