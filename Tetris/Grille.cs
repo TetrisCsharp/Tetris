@@ -8,15 +8,18 @@ namespace Tetris_Like
 {
     public class Grille
     {
-        private const int dim_x = 12; // hauteur de la grille
-        private const int dim_y = 8; // largeur de la grille
+        private int dim_x = 12; // hauteur de la grille
+        private int dim_y = 8; // largeur de la grille
         private char[,] tab; // la grille en elle meme
         private Piece currentPiece; // la piece que l'on est en train de bouger sur la grille
         private ConsoleKey ck;
+        private GameManager gameManager;
 
 
-        public Grille() {
+        public Grille(int dim_x,int dim_y) {
 
+            this.dim_x = dim_x;
+            this.dim_y = dim_y;
             this.tab = new char[dim_x, dim_y];
             for (int x = 0; x < dim_x; x++)
             {
@@ -60,9 +63,11 @@ namespace Tetris_Like
                     if (j == dim_y - 1)
                     {
                         Console.Write("|");
-                        Console.Write("\n");
+                       
                     }
                 }
+                if (i == 4) Console.Write(" Speed : " + gameManager.Speed);
+                Console.Write("\n");
             }
             Console.WriteLine("----------");
 
@@ -260,13 +265,14 @@ namespace Tetris_Like
 
         }
 
-        public void deleteLine()//to be tested
+        public void deleteLine(GameManager gameManager)//to be tested
         {
             for (int x = 0; x < this.tab.GetLength(0); x++)
             {
                 if (verifDeleteLineOn(x)==true)
                 {
                     moveElementAbove(x);
+                    if(this.gameManager.Speed > 0) this.gameManager.Speed -= 10;
                 }
             }
         }
@@ -286,6 +292,13 @@ namespace Tetris_Like
                 this.tab[0, j] = ' ';
             }
         }
+
+        public void setGameManager(GameManager gameManager)
+        {
+            this.gameManager = gameManager;
+            
+        }
+
     }
 }
 

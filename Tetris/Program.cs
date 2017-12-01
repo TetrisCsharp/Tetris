@@ -14,7 +14,7 @@ namespace Tetris_Like
             //Connecion();
 
             //variables
-            int refresh = 50;
+            int refresh = 25;
             int speed = 300;
 
             GameManager gameManager = new GameManager(refresh, speed);

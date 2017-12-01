@@ -18,10 +18,11 @@ namespace Tetris_Like
         private Thread threadDisplay;
         private Thread threadDelete;
         private Thread threadClientServer;
+        private int linesDestroyed;
 
         public GameManager(int refresh, int speed)
         {
-            this.grille = new Grille();
+            this.grille = new Grille(12,8);
             this.refresh = refresh;
             this.speed = speed;
             this.finishGame = false;
@@ -29,6 +30,7 @@ namespace Tetris_Like
             this.threadDisplay = new Thread(() => display(this));
             this.threadDelete = new Thread(() => deleteLine());
             this.threadKey = new Thread(() => KeyPressed(grille));
+            this.setGameManager();
           
         }
         public void startGame()
@@ -46,7 +48,8 @@ namespace Tetris_Like
                     if (grille.beforeTheEnd()) break;
                     goDown(grille);
                     if (!grille.verifBelowPiece()) grille.suppressionPiece();
-                    grille.deleteLine();
+                    grille.deleteLine(this);
+                    
                 }
             }
             Console.Clear();
@@ -58,7 +61,8 @@ namespace Tetris_Like
         {
             while (true)
             {
-                grille.deleteLine();
+                grille.deleteLine(this);
+                
             }
         }
 
@@ -80,6 +84,9 @@ namespace Tetris_Like
            
             if (cki.Key == ConsoleKey.RightArrow && !grille.OutOfLimitRight() && !grille.verifRightPiece()) goRight(grille);
 
+            if (cki.Key == ConsoleKey.DownArrow && !grille.verifBelowPiece()) goDown(grille);
+
+
         }
         //gérer par un thread
         public void CommunicationWithServer()
@@ -93,6 +100,7 @@ namespace Tetris_Like
                 game.Grille.AffichageGrille();
                 Thread.Sleep(this.refresh);
                 Console.SetCursorPosition(0, 0);
+                if (grille.grilleFull()) break;
             }
 
         }
@@ -101,32 +109,42 @@ namespace Tetris_Like
         {
             //Ajout Piece
             grille.AjoutPiece(new Piece());
-            Thread.Sleep(this.speed);
+        
         }
 
         public void goRight(Grille grille)
         {
             grille.suppressionPiece();          
             grille.deplacementPiece(true);
-            Thread.Sleep(this.speed);
+      
         }
 
         public void goLeft(Grille grille)
         {
             grille.suppressionPiece();
             grille.deplacementPiece(false);
-            Thread.Sleep(this.speed);
+  
         }
 
         public void goDown(Grille grille)
         {
             grille.suppressionPiece();
             grille.descendrePiece();
-            Thread.Sleep(this.speed);
+           Thread.Sleep(this.speed);
+        
         }
 
         public Grille Grille { get { return this.grille; } }
+        public int Speed
+        {
+            get { return this.speed; }
+            set { this.speed = value; }
+        }
 
+        public void setGameManager()
+        {
+            this.grille.setGameManager(this);
+        }
     }
 
 
