@@ -11,13 +11,19 @@ namespace Tetris_Like
 
         static void Main(string[] args)
         {
-            //Connecion();
 
+            Console.WriteLine("Provide IP:");
+            String ip = Console.ReadLine();
+
+            Console.WriteLine("Provide Port:");
+            int port = Int32.Parse(Console.ReadLine());
+
+           
             //variables
             int refresh = 25;
             int speed = 300;
 
-            GameManager gameManager = new GameManager(refresh, speed);
+            GameManager gameManager = new GameManager(refresh, speed, ip, port);
 
             Console.WriteLine("Appuyez pour jouer");
             Console.ReadKey();
@@ -27,10 +33,7 @@ namespace Tetris_Like
 
         }
 
-        public static void Connecion(){
-            Client client = new Client();
-            client.StartClient();
-    }
+      
 
     }
 }

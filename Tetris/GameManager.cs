@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
@@ -20,8 +22,19 @@ namespace Tetris_Like
         private Thread threadClientServer;
         private int linesDestroyed;
 
-        public GameManager(int refresh, int speed)
+
+        //connection serveur
+        private TcpClient _client;
+        private StreamReader _sReader;
+        private StreamWriter _sWriter;
+        //connection serveur
+
+
+        public GameManager(int refresh, int speed, String ipAddress, int portNum)
         {
+            _client = new TcpClient();
+            _client.Connect(ipAddress, portNum);
+            
             this.grille = new Grille(12,8);
             this.refresh = refresh;
             this.speed = speed;
@@ -33,28 +46,72 @@ namespace Tetris_Like
             this.setGameManager();
           
         }
+
         public void startGame()
         {
 
             threadKey.Start();
             threadDisplay.Start();
+            _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
+            _sWriter = new StreamWriter(_client.GetStream(), Encoding.ASCII);
+
+            
+            new Thread(Reception).Start();
+            
 
             while (!grille.grilleFull())
             {
+                //écoute du serveur
+                new Thread(Reception).Start();
+
+
                 addPiece(grille);
 
                 while (!grille.verifBelowPiece())
                 {
+                   
                     if (grille.beforeTheEnd()) break;
                     goDown(grille);
-                    if (!grille.verifBelowPiece()) grille.suppressionPiece();
+                    if (!grille.verifBelowPiece()) grille.suppressionPiece(); //line  new Thread(()=>AskServer("line")).Start();
                     grille.deleteLine(this);
+
                     
                 }
+                //requete serveur
+
+                //askpiece  new Thread(()=>AskServer("askpiece")).Start();
+
             }
             Console.Clear();
             Console.WriteLine("GAME OVER !!!");
 
+        }
+
+        private void Reception()
+        {
+            
+             String sDataIncomming = _sReader.ReadLine();
+             Console.WriteLine(sDataIncomming);
+            //Fonction rajouter une ligne
+
+            
+        }
+        private void AskServer(string req)
+        {
+            
+             String sData = req;
+            // Console.Write("&gt; ");
+
+
+            // sData = Console.ReadLine();
+            //sData = "askpiece";
+            //sData = "line";
+            //sData = "finished";
+          //...
+             _sWriter.WriteLine(sData);
+             _sWriter.Flush();
+
+            
         }
 
         public void deleteLine()
