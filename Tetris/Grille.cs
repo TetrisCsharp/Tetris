@@ -16,7 +16,8 @@ namespace Tetris_Like
         private GameManager gameManager;
 
 
-        public Grille(int dim_x,int dim_y) {
+        public Grille(int dim_x, int dim_y)
+        {
 
             this.dim_x = dim_x;
             this.dim_y = dim_y;
@@ -30,14 +31,16 @@ namespace Tetris_Like
             }
         }
 
-        public ConsoleKey Keyboard {
+        public ConsoleKey Keyboard
+        {
             get { return this.ck; }
             set { this.ck = value; }
         }
 
         public char[,] Tab
         {
-            get {
+            get
+            {
                 return this.tab;
             }
             set
@@ -63,7 +66,7 @@ namespace Tetris_Like
                     if (j == dim_y - 1)
                     {
                         Console.Write("|");
-                       
+
                     }
                 }
                 if (i == 4) Console.Write(" Speed : " + gameManager.Speed);
@@ -127,7 +130,7 @@ namespace Tetris_Like
                     int n2 = this.currentPiece.ArrayPosition[i, j][1] + b;//y
 
                     this.currentPiece.ArrayPosition[i, j][1] += b;
-                  this.tab[n1, n2] = '#';
+                    this.tab[n1, n2] = '#';
                 }
             }
         }
@@ -228,7 +231,8 @@ namespace Tetris_Like
             for (int j = 0; j < this.tab.GetLength(1); j++)
             {
                 if (this.tab[0, j] == '#') return true;
-            } return false;
+            }
+            return false;
         }
 
         public bool limits()
@@ -269,10 +273,10 @@ namespace Tetris_Like
         {
             for (int x = 0; x < this.tab.GetLength(0); x++)
             {
-                if (verifDeleteLineOn(x)==true)
+                if (verifDeleteLineOn(x) == true)
                 {
                     moveElementAbove(x);
-                    if(this.gameManager.Speed > 0) this.gameManager.Speed -= 10;
+                    if (this.gameManager.Speed > 0) this.gameManager.Speed -= 10;
                 }
             }
         }
@@ -293,12 +297,30 @@ namespace Tetris_Like
             }
         }
 
+        public void addLine()
+        {
+            for (int i = this.tab.GetLength(0) - 2; i > 0; i--)
+            {
+                for (int j = 0; j < this.tab.GetLength(1); j++)
+                {
+                    this.tab[i, j] = this.tab[i + 1, j];
+                }
+            }
+            //last line new line (that cannot be removed)
+            for (int j = 0; j < this.tab.GetLength(1); j++)
+            {
+                this.tab[this.tab.GetLength(0) - 1, j] = '*';
+            }
+        }
+
+
         public void setGameManager(GameManager gameManager)
         {
             this.gameManager = gameManager;
-            
-        }
 
+        }
     }
+
+    
 }
 
