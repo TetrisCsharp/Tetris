@@ -70,7 +70,7 @@ namespace Tetris_Like
 
                     }
                 }
-                if (i == 4) Console.Write(" Speed : " + gameManager.Speed);
+             
                 Console.Write("\n");
             }
             Console.WriteLine("----------");
@@ -168,6 +168,8 @@ namespace Tetris_Like
                 //verification sur la ligne suivante (les conditions d'arrêts pour laisser la pièce à un endroit et pour passer à une nouvelle piece
                 if (indexX == this.tab.GetLength(0) - 1) return true;
                 if (this.tab[indexX + 1, indexY] == '#') return true;
+                if (this.tab[indexX + 1, indexY] == '*') return true;
+
             }
             return false;
         }
@@ -232,6 +234,7 @@ namespace Tetris_Like
             for (int j = 0; j < this.tab.GetLength(1); j++)
             {
                 if (this.tab[0, j] == '#') return true;
+                if (this.tab[0, j] == '*') return true;
             }
             return false;
         }
@@ -270,19 +273,9 @@ namespace Tetris_Like
 
         }
 
-        public void deleteLine(GameManager gameManager)//to be tested
-        {
-            for (int x = 0; x < this.tab.GetLength(0); x++)
-            {
-                if (verifDeleteLineOn(x) == true)
-                {
-                    moveElementAbove(x);
-                    if (this.gameManager.Speed > 0) this.gameManager.Speed -= 10;
-                }
-            }
-        }
+        
 
-        public void moveElementAbove(int x) // to be tested
+        public void moveElementAbove(int x) 
         {
             for (int i = x; i > 0; i--)
             {

@@ -13,7 +13,7 @@ namespace Tetris_Like
         
         private Grille grille;
         private int refresh; // pour l'affichage
-        private int speed; // pour le reste
+      
         private bool finishGame;
         private bool finishWithPiece;
         private Thread threadKey;
@@ -57,7 +57,7 @@ namespace Tetris_Like
             this.finishGame = false;
             this.finishWithPiece = false;
             this.threadDisplay = new Thread(() => display(this));
-            this.threadDelete = new Thread(() => deleteLine());
+       //     this.threadDelete = new Thread(() => deleteLine());
             this.threadKey = new Thread(() => KeyPressed(grille));
             this.setGameManager();
         }
@@ -71,6 +71,20 @@ namespace Tetris_Like
             
         }
 
+
+        public void deleteLine()
+        {
+            for (int x = 0; x < this.grille.Tab.GetLength(0); x++)
+            {
+                if (this.grille.verifDeleteLineOn(x) == true)
+                {
+                    this.grille.moveElementAbove(x);
+                    if (this.delaySpeed > 0) this.delaySpeed -= 10;
+                    sendToServer("line"); // "line" send to the server
+
+                }
+            }
+        }
         public void startGame()
         {
             _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
@@ -79,13 +93,15 @@ namespace Tetris_Like
             threadKey.Start();
             threadDisplay.Start();
 
+           
+
             while (!grille.grilleFull())
             {
                 new Thread(Reception).Start();
 
                 //écoute du serveur
-                id = askPiece(_sReader,_sWriter);
-
+               // id = askPiece(_sReader,_sWriter);
+                new Thread(() => this.id = askPiece(_sReader, _sWriter)).Start();
                 //création de la pièce
                 addPiece(grille,id);
 
@@ -97,39 +113,39 @@ namespace Tetris_Like
                     if (!grille.verifBelowPiece())
                     {
                         grille.suppressionPiece();
-                        new Thread(()=>sendToServer(_sWriter,"line")).Start(); // "line" send to the server
+                   
                     }
-                    grille.deleteLine(this);
-                    grille.addLine();// atester
-                    
+                    this.deleteLine();
                 }
                 //requete serveur
-
-                //askpiece  new Thread(()=>AskServer("askpiece")).Start();
-
             }
             Console.Clear();
             Console.WriteLine("GAME OVER !!!");
 
         }
 
+
+
         public int askPiece(StreamReader reader,StreamWriter writer)//fonction random sur serveur
         {
             writer.WriteLine("askpiece");
+            writer.Flush();
             String sDataIncomming = reader.ReadLine();
+
             Console.WriteLine(sDataIncomming);
-            int id = Convert.ToInt32(sDataIncomming);
+            int id = int.Parse(sDataIncomming);
             return id;
         }
 
         private void Reception()
         {
-             String sDataIncomming = _sReader.ReadLine();
+             string sDataIncomming = _sReader.ReadLine();
              Console.WriteLine(sDataIncomming);
 
-            if(sDataIncomming == "line+1") // ajout de ligne
+            if(sDataIncomming == "+1") // ajout de ligne
             {
-                grille.addLine();
+                new Thread(() => grille.addLine()).Start();
+              
             }
             else // partie terminé
             {
@@ -137,11 +153,11 @@ namespace Tetris_Like
             }
         }
         //send line to the other clients or send message of the end of the game
-        private void sendToServer(StreamWriter writer,String message)
+        private void sendToServer(string message)
         {
              String sData = message;
              Console.WriteLine(message);
-             writer.WriteLine(sData);
+             _sWriter.WriteLine(sData);
 
 
 
@@ -150,20 +166,13 @@ namespace Tetris_Like
             //sData = "line";
             //sData = "finished";
           //...
-             _sWriter.WriteLine(sData);
+            
              _sWriter.Flush();
 
             
         }
 
-        public void deleteLine()
-        {
-            while (true)
-            {
-                grille.deleteLine(this);
-                
-            }
-        }
+       
 
         public bool KeyPressed(Grille grille)
         {
@@ -229,7 +238,7 @@ namespace Tetris_Like
         {
             grille.suppressionPiece();
             grille.descendrePiece();
-           Thread.Sleep(this.speed);
+           Thread.Sleep(this.delaySpeed);
         
         }
 
@@ -241,8 +250,8 @@ namespace Tetris_Like
         public Grille Grille { get { return this.grille; } }
         public int Speed
         {
-            get { return this.speed; }
-            set { this.speed = value; }
+            get { return this.delaySpeed; }
+            set { this.delaySpeed = value; }
         }
 
         public void setGameManager()

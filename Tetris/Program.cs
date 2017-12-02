@@ -16,6 +16,7 @@ namespace Tetris_Like
 
             // commands : TetrisPlayer.exe server_address server_port high_key right_key low_key left_key
             // example : TetrisPlayer.exe 127.0.0.1 4321 z q s d
+            // example : TetrisPlayer.exe 127.0.0.1 5555
 
             String[] tab = commands.Split(' ');
 
