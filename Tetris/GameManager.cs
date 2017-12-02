@@ -22,59 +22,85 @@ namespace Tetris_Like
         private Thread threadClientServer;
         private int linesDestroyed;
 
+        //Keyboard
+        private ConsoleKey up;
+        private ConsoleKey down;
+        private ConsoleKey left;
+        private ConsoleKey right;
 
         //connection serveur
         private TcpClient _client;
         private StreamReader _sReader;
         private StreamWriter _sWriter;
-        //connection serveur
 
+        //reponse serveur
+        private int id;
+        private int column;
+        private int maxNumberOfLines;
+        private int delaySpeed;
 
-        public GameManager(int refresh, int speed, String ipAddress, int portNum)
+        public GameManager(String ipAddress, int portNum)
         {
             _client = new TcpClient();
             _client.Connect(ipAddress, portNum);
-            
-            this.grille = new Grille(12,8);
-            this.refresh = refresh;
-            this.speed = speed;
+            StreamReader reader = new StreamReader(_client.GetStream(), Encoding.ASCII);
+
+            string [] str = splitInfos(reader);
+            this.column = Convert.ToInt32(str[0]);
+            this.maxNumberOfLines = Convert.ToInt32(str[1]);
+            this.delaySpeed = Convert.ToInt32(str[2]);
+
+            //init grille
+            this.grille = new Grille(maxNumberOfLines, column);
+
+            this.refresh = 25;
             this.finishGame = false;
             this.finishWithPiece = false;
             this.threadDisplay = new Thread(() => display(this));
             this.threadDelete = new Thread(() => deleteLine());
             this.threadKey = new Thread(() => KeyPressed(grille));
             this.setGameManager();
-          
+        }
+
+        // récupérer les informations du serveur pour initialiser la grille,delaySpeed
+        public string [] splitInfos(StreamReader reader)
+        {
+            string str = reader.ReadLine();
+            string [] str2 = str.Split(' ');
+            return str2;
+            
         }
 
         public void startGame()
         {
-
-            threadKey.Start();
-            threadDisplay.Start();
             _sReader = new StreamReader(_client.GetStream(), Encoding.ASCII);
             _sWriter = new StreamWriter(_client.GetStream(), Encoding.ASCII);
 
-            
-            new Thread(Reception).Start();
-            
+            threadKey.Start();
+            threadDisplay.Start();
 
             while (!grille.grilleFull())
             {
-                //écoute du serveur
                 new Thread(Reception).Start();
 
+                //écoute du serveur
+                id = askPiece(_sReader,_sWriter);
 
-                addPiece(grille);
+                //création de la pièce
+                addPiece(grille,id);
 
                 while (!grille.verifBelowPiece())
                 {
                    
                     if (grille.beforeTheEnd()) break;
                     goDown(grille);
-                    if (!grille.verifBelowPiece()) grille.suppressionPiece(); //line  new Thread(()=>AskServer("line")).Start();
+                    if (!grille.verifBelowPiece())
+                    {
+                        grille.suppressionPiece();
+                        new Thread(()=>sendToServer(_sWriter,"line")).Start(); // "line" send to the server
+                    }
                     grille.deleteLine(this);
-
+                    grille.addLine();// atester
                     
                 }
                 //requete serveur
@@ -87,24 +113,40 @@ namespace Tetris_Like
 
         }
 
+        public int askPiece(StreamReader reader,StreamWriter writer)//fonction random sur serveur
+        {
+            writer.WriteLine("askpiece");
+            String sDataIncomming = reader.ReadLine();
+            Console.WriteLine(sDataIncomming);
+            int id = Convert.ToInt32(sDataIncomming);
+            return id;
+        }
+
         private void Reception()
         {
-            
              String sDataIncomming = _sReader.ReadLine();
              Console.WriteLine(sDataIncomming);
-            //Fonction rajouter une ligne
 
-            
+            if(sDataIncomming == "line+1") // ajout de ligne
+            {
+                grille.addLine();
+            }
+            else // partie terminé
+            {
+
+            }
         }
-        private void AskServer(string req)
+        //send line to the other clients or send message of the end of the game
+        private void sendToServer(StreamWriter writer,String message)
         {
-            
-             String sData = req;
-            // Console.Write("&gt; ");
+             String sData = message;
+             Console.WriteLine(message);
+             writer.WriteLine(sData);
+
+
 
 
             // sData = Console.ReadLine();
-            //sData = "askpiece";
             //sData = "line";
             //sData = "finished";
           //...
@@ -162,10 +204,10 @@ namespace Tetris_Like
 
         }
 
-        public void addPiece(Grille grille)
+        public void addPiece(Grille grille,int id)
         {
             //Ajout Piece
-            grille.AjoutPiece(new Piece());
+            grille.AjoutPiece(new Piece(id));
         
         }
 
@@ -189,6 +231,11 @@ namespace Tetris_Like
             grille.descendrePiece();
            Thread.Sleep(this.speed);
         
+        }
+
+        public void addLine()
+        {
+            grille.addLine();
         }
 
         public Grille Grille { get { return this.grille; } }

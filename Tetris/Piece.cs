@@ -12,10 +12,9 @@ namespace Tetris_Like
         private int id;
         private int[,][] arrayPosition; //position de la piece par rapport la grille (index de la piece dans la grille)
 
-        public Piece()
+        public Piece(int id)
         {
-            Random random = new Random();
-            this.id = random.Next(1, 3);
+            this.id = id;
             this.array = new char[id, id];
             this.remplirArrayPosition();
 
