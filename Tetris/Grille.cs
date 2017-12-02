@@ -293,7 +293,7 @@ namespace Tetris_Like
 
         public void addLine()
         {
-            for (int i = this.tab.GetLength(0) - 2; i > 0; i--)
+            for (int i = 0; i < this.tab.GetLength(0)-1; i++)
             {
                 for (int j = 0; j < this.tab.GetLength(1); j++)
                 {
